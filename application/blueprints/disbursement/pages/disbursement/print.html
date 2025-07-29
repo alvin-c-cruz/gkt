@@ -1,0 +1,135 @@
+<html>
+<head>
+    <title>Print Preview: CD No. {{obj.record_number}}</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/voucher.css')}}">
+    <style>
+        textarea {
+            border: none;
+            background-color: transparent;
+            resize: none;
+            overflow:hidden;
+            outline: none;
+        }
+    </style>
+    {% if not obj.submitted %}
+    <style>
+        body {
+            color: red;
+        }
+
+        textarea {
+            color: red;
+        }
+    </style>
+    {% endif %}
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="flex-row justify-center">
+            <h2>THE HEALTH COLLECTIVE CORP.</h2>
+        </div>
+
+        <div class="flex-row justify-center">
+            <div class="flex-1"></div>
+            <div class="flex-row flex-1 justify-center">
+                <h4><u>CHECK VOUCHER</u></h4>
+            </div>            
+            <div class="flex-row flex-1 justify-center">
+                <div class="flex-row justify-center align-center">
+                    <label>No.</label>
+                    <span><strong class="font-red font-size-20">{{obj.record_number}}</strong></span>                    
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex-row justify-center">
+            <div class="flex-row flex-3">
+                <div class="flex-row flex-1 align-center">
+                    <label>PAID TO: </label>                     
+                </div>
+                <div class="flex-row flex-3 align-center border-bottom">
+                    <span class="flex-shrink">{{obj.vendor.vendor_name}}</span>                       
+                </div>
+            </div>
+            <div class="flex-row flex-2">
+                <div class="flex-row flex-1 justify-end">
+                    <label>DATE: </label>                    
+                </div>
+                <div class="flex-row flex-2 justify-center border-bottom">
+                    <span>{{obj.formatted_record_date}}</span>                    
+                </div>
+            </div>             
+        </div>
+        
+        <div class="flex-row">
+            <div class="flex-row flex-3">
+                <div class="flex-row flex-1 align-center">
+                                       
+                </div>
+                <div class="flex-row flex-3 align-center border-bottom">
+                    <span class="flex-shrink"></span>                       
+                </div>                
+            </div>
+            <div class="flex-row flex-2">
+                <div class="flex-row flex-1 justify-end">
+                    <label>CHECK NO.: </label>                   
+                </div>
+                <div class="flex-row flex-2 justify-center border-bottom">
+                    <span>{{obj.check_number}}</span>                    
+                </div>
+            </div>             
+        </div>
+    </header>
+    <main class="flex-column justify-center bordered margin-top-10">  
+        <div class="flex-row justify-center">
+            <label class="flex-row flex-4 justify-center height-15 line-bordered border-bottom"><strong>ACCOUNT TITLE</strong></label>
+            <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>DEBIT</strong></label>
+            <label class="flex-row flex-1 justify-center height-15 line-bordered border-bottom"><strong>CREDIT</strong></label>            
+        </div>
+        <div class="flex-column height-300">
+        {% for entry in obj.disbursement_details %}
+        <div class="flex-row justify-center">
+            {% if entry.debit %}
+            <label class="flex-row flex-4 justify-start"><span class="margin-left-10">{{entry.account.account_title}}</span></label>
+            {% else %}
+            <label class="flex-row flex-4 justify-start"><span class="margin-left-50">{{entry.account.account_title}}</span></label>
+            {% endif %}
+            <label class="flex-row flex-1 justify-end"><span class="margin-right-10">{% if entry.debit %}{{entry.formatted_debit}}{% endif %}</span></label>
+            <label class="flex-row flex-1 justify-end"><span class="margin-right-10">{% if entry.credit %}{{entry.formatted_credit}}{% endif %}</span></label>     
+        </div>
+        {% endfor %} 
+        </div>
+
+                   
+    </main>
+
+    <footer class="flex-column">
+        <div class="flex-column line-bordered border-bottom height-100">
+            <span class="margin-left-10">P A R T I C U L A R S:</span>
+            <textarea class="margin-left-50 margin-right-10" cols="30" rows="4">{{obj.description}}</textarea>
+        </div>
+        <div class="flex-column">
+            <div class="flex-row justify-center">
+                <div class="flex-row flex-1 height-50">
+                    <label class="flex-row flex-3 align-end">Prepared by:</label>
+                    <span class="flex-row flex-3 justify-center border-bottom align-end">{{ obj.prepared_by }}</span>
+                </div>
+                <div class="flex-row flex-1 height-50">
+                    <label class="flex-row flex-3 align-end">Checked by:</label>
+                    <span class="flex-row flex-3 justify-center border-bottom align-end">{{ obj.checked_by }}</span>
+                </div>
+                <div class="flex-row flex-1 height-50">
+                    <label class="flex-row flex-3 align-end">Approved by:</label>
+                    <span class="flex-row flex-3 justify-center border-bottom align-end">{{ obj.approved_by }}</span>
+                </div>
+                <div class="flex-row flex-1 height-50">
+                    <label class="flex-row flex-3 align-end">Received by:</label>
+                    <span class="flex-row flex-3 justify-center border-bottom align-end"></span>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>

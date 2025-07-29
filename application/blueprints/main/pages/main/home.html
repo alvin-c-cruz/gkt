@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% from "macros_button.html" import edit_button, delete_button, approve_button %}
+
+{% block styles %}
+<style>
+    .verse-container {
+        margin-top: 50px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #ffffff;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        text-align: center;
+    }
+
+    .verse-text {
+        font-size: 1.5em;
+        color: #333333;
+        margin-bottom: 15px;
+    }
+
+    .verse-reference {
+        font-size: 1.2em;
+        color: #555555;
+        font-style: italic;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="verse-container">
+    <p class="verse-text">
+        Study to shew thyself approved unto God, a workman that needeth not to be ashamed, rightly dividing the word of truth.</p>
+    <p class="verse-reference">- 2 Timothy 2:15 KJV</p>
+</div>
+
+{% if "Department" in current_user.user_roles and current_user.admin and departments %}
+<h2>Department for approval</h2>
+<table class="table table-striped">
+    <tr>
+        <th>Department Name</th>
+        <th>Actions</th>
+    </tr>
+    {% for record in departments %}
+    <tr>
+        <td>{{ record.department_name }}</td>
+        <td>
+            {{ edit_button(url_for('department.edit', department_id=record.id)) }}
+            {{ delete_button(url_for('department.delete', department_id=record.id)) }}
+            {{ approve_button(url_for('department.approve', department_id=record.id)) }}
+        </td>
+    </tr>
+    
+    {% endfor %}
+</table>
+<hr>
+{% endif %}
+
+{% if "Customer" in current_user.user_roles and current_user.admin and customers %}
+<h2>Customer for approval</h2>
+<table class="table table-striped">
+    <tr>
+        <th>Customer Alias</th>
+        <th>Registered Name</th>
+        <th>TIN</th>
+        <th>Address</th>
+        <th>Business Style</th>
+        <th>Actions</th>
+    </tr>
+    {% for record in customers %}
+    <tr>
+        <td>{{ record.customer_name }}</td>
+        <td>{{ record.registered_name }}</td>
+        <td>{{ record.tin }}</td>
+        <td>{{ record.address }}</td>
+        <td>{{ record.business_style }}</td>
+        <td>
+            {{ edit_button(url_for('customer.edit', customer_id=record.id)) }}
+            {{ delete_button(url_for('customer.delete', customer_id=record.id)) }}
+            {{ approve_button(url_for('customer.approve', customer_id=record.id)) }}
+        </td>
+    </tr>
+    
+    {% endfor %}
+</table>
+<hr>
+{% endif %}
+
+{% if "Vendor" in current_user.user_roles and current_user.admin and vendors %}
+<h2>Vendor for approval</h2>
+<table class="table table-striped">
+    <tr>
+        <th>Vendor Alias</th>
+        <th>Registered Name</th>
+        <th>TIN</th>
+        <th>Address</th>
+        <th>Business Style</th>
+        <th>Actions</th>
+    </tr>
+    {% for record in vendors %}
+    <tr>
+        <td>{{ record.vendor_name }}</td>
+        <td>{{ record.registered_name }}</td>
+        <td>{{ record.tin }}</td>
+        <td>{{ record.address }}</td>
+        <td>{{ record.business_style }}</td>
+        <td>
+            {{ edit_button(url_for('vendor.edit', record_id=record.id)) }}
+            {{ delete_button(url_for('vendor.delete', record_id=record.id)) }}
+            {{ approve_button(url_for('vendor.approve', record_id=record.id)) }}
+        </td>
+    </tr>
+    
+    {% endfor %}
+</table>
+<hr>
+{% endif %}
+
+
+{% if "Measure" in current_user.user_roles and current_user.admin and measures %}
+<h2>Measure for approval</h2>
+<table class="table table-striped">
+    <tr>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    {% for record in measures %}
+    <tr>
+        <td>{{ record.measure_name }}</td>
+        <td>
+            {{ edit_button(url_for('measure.edit', measure_id=record.id)) }}
+            {{ delete_button(url_for('measure.delete', measure_id=record.id)) }}
+            {{ approve_button(url_for('measure.approve', measure_id=record.id)) }}
+        </td>
+    </tr>
+    
+    {% endfor %}
+</table>
+<hr>
+{% endif %}
+
+{% if "Plastic Label" in current_user.user_roles and current_user.admin and plastic_labels %}
+<h2>Plastic Label for approval</h2>
+<table class="table table-striped">
+    <tr>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    {% for record in plastic_labels %}
+    <tr>
+        <td>{{ record.label_name }}</td>
+        <td>
+            {{ edit_button(url_for('plastic_label.edit', plastic_label_id=record.id)) }}
+            {{ delete_button(url_for('plastic_label.delete', plastic_label_id=record.id)) }}
+            {{ approve_button(url_for('plastic_label.approve', plastic_label_id=record.id)) }}
+        </td>
+    </tr>
+    
+    {% endfor %}
+</table>
+<hr>
+{% endif %}
+
+{% endblock %}

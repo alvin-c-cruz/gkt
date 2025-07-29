@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% from "macros_form_header.html" import date_box, text_box, select_box, text_area, search_box %}
+{% from "macros_form_detail.html" import detail_primary_key, detail_textbox, detail_number_float, detail_searchbox %}
+
+{% block title %}Disbursement{% endblock %}
+
+{% block styles %}
+<style>
+    .table th, .table td, .table input, .table select {
+        font-size: 1em; 
+    }
+
+    /* Add your style adjustments here */
+    .table th, .table td {
+        white-space: nowrap; /* Prevent line breaks in table cells */
+    }
+
+    th:nth-child(1),
+    td:nth-child(1) {
+        width: 45%; /* Account Title */
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+        width: 15%; /* Debit */
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+        width: 15%; /* Credit */
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+        width: 20%; /* Side Note */
+    }
+
+    input[type=number] {
+        text-align: right; 
+    }
+
+    /* Hide the spinner controls */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container p-5">
+    {% if form.id %}
+        {% if form.submitted or form.cancelled %}
+        <h1 class="mb-4"><span style="color:red;">Locked</span> Disbursement</h1>
+        {% else %}   
+        <h1 class="mb-4">Edit Disbursement</h1>
+        {% endif %}
+        <form action="{{ url_for('disbursement.edit', record_id=form.id) }}" method="post">
+            <input type="number" name="record_id" value="{{ form.id }}" hidden>
+    {% else %}
+        <h1 class="mb-4">New Disbursement</h1>
+        <form action="{{ url_for('disbursement.add') }}" method="post">
+    {% endif %}
+    <hr>
+    <div class="row mb-2">
+        <div class="col-6">
+            <div class="row">
+                <div class="col-8">
+                    {% if form.errors.get('entry') %}
+                    <p class="text-danger">{{ form.errors.get('entry') }}</p>
+                    {% endif %}
+                    {% if form.cancelled %}
+                    <h1 style="color:red;">CANCELLED</h1>
+                    {% endif %} 
+                </div>
+                <div class="col-4">
+                    {% if form.id %}
+                        {% if form.submitted or form.cancelled %}
+                    
+                        {% else %}
+                        <a href="{{ url_for('disbursement.print', record_id=form.id) }}" 
+                        class="btn btn-secondary form-control" 
+                        target="_blank">Print Preview</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+               
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <div class="col-4">
+                    {% if not form.submitted %}
+                        {% if not form.cancelled %}
+                    <input type="submit" value="Save Draft" name="cmd_button" class="btn btn-success form-control">
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="col-4">
+                    {% if form.id %}
+                        {% if form.submitted or form.cancelled %}
+                    <a href="{{ url_for('disbursement.print', record_id=form.id) }}" 
+                        class="btn btn-secondary form-control" 
+                        target="_blank">Print</a>
+                        {% else %}
+                    <input type="submit" value="Submit for Printing" name="cmd_button" 
+                        class="btn btn-primary form-control" 
+                        onclick="return confirmMessage('Type YES to submit this record for printing.');">
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="col-4">
+                    {% if not form.cancelled and form.id %}
+                    <a href="{{ url_for('disbursement.cancel', record_id=form.id) }}" 
+                        class="btn btn-danger form-control" 
+                        onclick="return confirmMessage('Type YES to cancel this record.');">Cancel Order</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    
+    <div class="row mb-2">
+        {{ date_box(form, "Date", "record_date", form.record_date, autofocus=True) }}
+        {{ text_box(form, "Disbursement No.", "record_number", form.record_number) }}
+    </div>
+
+    <div class="row mb-2">
+        {{ search_box(form, "Vendor", "vendor_name", form.vendor_name, url_for('vendor._autocomplete')) }}
+    </div>
+
+    <div class="row mb-2">
+        {{ text_box(form, "A/P Number", "ap_number", form.ap_number) }}
+        {{ text_box(form, "P.O. Number", "po_number", form.po_number) }}
+    </div>
+    
+    <div class="row mb-2">
+        {{ text_area(form, "Description", "description", 5, form.description) }}
+    </div>
+
+    <div class="row mb-2">
+        {{ text_box(form, "Prepared by", "prepared_by", form.prepared_by) }}
+        {{ text_box(form, "Checked by", "checked_by", form.checked_by) }}
+        {{ text_box(form, "Approved by", "approved_by", form.approved_by) }}
+    </div>
+
+    <table class="table table-striped table-light">
+        <thead>
+            <tr>
+                <th>Account Title</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th>Side Note</th>
+            </tr>
+        </thead>
+        <tbody>                
+            {% for i, form_detail in form.details %}
+            <tr>
+                <td>
+                    {{ detail_primary_key(i, form_detail, "disbursement_detail_id", form_detail.id) }}
+                    {{ detail_searchbox(i, form, form_detail, "account_name", form_detail.account_name) }}
+                </td>
+                <td>
+                    {{ detail_number_float(i, form, form_detail, "debit", form_detail.debit) }}
+                </td>
+                <td>
+                    {{ detail_number_float(i, form, form_detail, "credit", form_detail.credit) }}
+                </td>
+                <td>
+                    {{ detail_textbox(i, form, form_detail, "side_note", form_detail.side_note) }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </form>
+</div>
+
+<script>
+    $(function() {
+        $.ajax({
+            url: '{{ url_for("vendor._autocomplete") }}'
+            }).done(function (data){
+                $('#vendor_name').autocomplete({
+                    source: data,
+                    minLength: 2
+                });
+            });
+        });
+</script>
+
+{% for i, form_detail in form.details %}
+<script>
+    $(function() {
+        $.ajax({
+            url: '{{ url_for("account._autocomplete") }}'
+            }).done(function (data){
+                $('#account_name-{{ i }}').autocomplete({
+                    source: data,
+                    minLength: 2
+                });
+            });
+        });
+</script>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "macros_simple_form.html" import text_box, text_area, save_button %}
+
+{% block title %}Vendor{% endblock %}
+
+{% block content %}
+<div class="container p-5">
+    {% if form.id %}
+    <h1 class="mb-4">Edit Vendor</h1>
+    <form action="{{ url_for('vendor.edit', record_id=form.id) }}" method="post">
+        <input type="number" name="record_id" value="{{ form.id }}" hidden>
+        {% else %}
+    <h1 class="mb-4">Add Vendor</h1>
+    <form action="{{ url_for('vendor.add') }}" method="post">
+        {% endif %}
+    
+        {{ text_box(form, "Vendor Name", "vendor_name", form.vendor_name, autofocus=True) }}
+
+        {{  save_button() }}
+
+    </form>
+</div>
+{% endblock %}

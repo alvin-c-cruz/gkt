@@ -1,0 +1,27 @@
+{% macro add_button(url) %}
+<a href="{{ url }}" class="btn btn-success btn-sm">Add</a>
+{% endmacro %}
+
+{% macro edit_button(url) %}
+<a href="{{ url }}" class="btn btn-warning btn-sm">Edit</a>
+{% endmacro %}
+
+{% macro delete_button(url) %}
+<a href="{{ url }}" class="btn btn-danger btn-sm" onclick="return confirmMessage('Type YES to delete this record.');" oncontextmenu="event.preventDefault();">Delete</a>
+{% endmacro %}
+
+{% macro approve_button(url) %}
+<a href="{{ url }}" class="btn btn-success btn-sm" onclick="return confirmMessage('Type YES to approve this record.');" oncontextmenu="event.preventDefault();">Approve</a>
+{% endmacro %}
+
+{% macro unlock_button(url) %}
+<a href="{{ url }}" class="btn btn-danger btn-sm" onclick="return confirmMessage('Type YES to unlock this record.');" oncontextmenu="event.preventDefault();">Unlock</a>
+{% endmacro %}
+
+{% macro activate_button(url) %}
+<a href="{{ url }}" class="btn btn-info btn-sm" onclick="return confirmMessage('Type YES to activate this record.');" oncontextmenu="event.preventDefault();">Active</a>
+{% endmacro %}
+
+{% macro deactivate_button(url) %}
+<a href="{{ url }}" class="btn btn-secondary btn-sm" onclick="return confirmMessage('Type YES to deactivate this record.');" oncontextmenu="event.preventDefault();">Inactive</a>
+{% endmacro %}

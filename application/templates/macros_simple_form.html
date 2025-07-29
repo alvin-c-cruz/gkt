@@ -1,0 +1,67 @@
+{% macro text_box(form, field_label, field_name, field_value, autofocus=False, auto_upper=True) %}
+<div class="row mb-3">
+    <label for="{{  field_name  }}" class="col-sm-2 col-form-label">{{ field_label }}</label>
+    <div class="col-sm-10">
+        <input type="text" name="{{  field_name  }}" value="{{ field_value }}" class="form-control {% if auto_upper %}upper-case{% endif %}" {% if autofocus %} autofocus {% endif %} autocomplete="off">
+        {% if form.errors.get(field_name) %}
+        <p style="color: red;">{{ form.errors.get(field_name) }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+{% macro date_box(form, field_label, field_name, field_value, autofocus=False) %}
+<div class="row mb-3">
+    <label for="{{  field_name  }}" class="col-sm-2 col-form-label">{{ field_label }}</label>
+    <div class="col-sm-10">
+        <input type="date" name="{{  field_name  }}" value="{{ field_value }}" class="form-control upper-case" {% if autofocus %} autofocus {% endif %} autocomplete="off">
+        {% if form.errors.get(field_name) %}
+        <p style="color: red;">{{ form.errors.get(field_name) }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro text_area(form, field_label, field_name, rows, field_value, autofocus=False) %}
+<div class="row mb-3">
+    <label for="{{  field_name  }}" class="col-sm-2 col-form-label">{{ field_label }}</label>
+    <div class="col-sm-10">
+        <textarea name="{{  field_name  }}" rows="{{ rows }}" class="form-control upper-case" {% if autofocus %} autofocus {% endif %} autocomplete="off">{{ field_value }}</textarea>
+        {% if form.errors.get(field_name) %}
+        <p style="color: red;">{{ form.errors.get(field_name) }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro select_box(form, field_label, field_name, field_value, options, autofocus=False) %}
+<div class="row mb-3">
+    <label for="{{ field_name }}" class="col-sm-2 col-form-label">{{ field_label }}</label>
+    <div class="col-sm-10">
+        <select name="{{ field_name }}" class="form-select" {% if autofocus %} autofocus {% endif %} {% if form.locked_ %} disabled {% endif %}>
+            <option value="0"></option>
+            {% for option in options %}
+                {% if option['id'] == field_value %}
+            <option value="{{ option['id'] }}" selected>{{ option['dropdown_name'] }}</option>
+                {% else %}
+            <option value="{{ option['id'] }}">{{ option['dropdown_name'] }}</option>
+                {% endif %}       
+            {% endfor %}
+        </select>
+        {% if form.errors.get('{{ field_name }}') %}
+        <p class="text-danger">{{ form.errors.get('{{ field_name }}') }}</p>
+        {% endif %}    
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro save_button(autofocus=False) %}
+<div class="row">
+    <div class="col-sm-10 offset-sm-2">
+        <input type="submit" value="Save" class="btn btn-primary">
+    </div>
+</div>
+{% endmacro %}

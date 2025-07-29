@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}User Delegations{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-5">User Delegations</h2>
+    
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card bg-beige">
+                <div class="card-body">
+                    <h5 class="card-title">{{ user.user_name }}</h5>
+                    <p class="card-text">{{ user.first_name }} {{ user.last_name }}</p>
+                    
+                    <div class="btn-group" role="group">
+                        {% if user.admin %}
+                        <a href="{{ url_for('user.user_admin', user_id=user.id, value=0) }}" class="btn {% if user.admin %}btn-success{% else %}btn-danger{% endif %} mr-3 ml-3">Admin</a>
+                        {% else %}
+                        <a href="{{ url_for('user.user_admin', user_id=user.id, value=1) }}" class="btn {% if user.admin %}btn-success{% else %}btn-danger{% endif %} mr-3 ml-3">Admin</a>
+                        {% endif %}
+                        {% if user.active %}
+                        <a href="{{ url_for('user.user_active', user_id=user.id, value=0) }}" class="btn {% if user.active %}btn-success{% else %}btn-danger{% endif %} mr-3 ml-3">Active</a>
+                        {% else %}
+                        <a href="{{ url_for('user.user_active', user_id=user.id, value=1) }}" class="btn {% if user.active %}btn-success{% else %}btn-danger{% endif %} mr-3 ml-3">Active</a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-3">
+                        {% for role in roles %}
+                            <a href="{% if role.role_name in user.user_roles %}{{ url_for('user.remove_role', user_id=user.id, role_id=role.id) }}{% else %}{{ url_for('user.add_role', user_id=user.id, role_id=role.id) }}{% endif %}" class="btn {% if role.role_name in user.user_roles %}btn-success{% else %}btn-danger{% endif %} mr-2 mb-2" >{{ role.role_name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-beige {
+        background-color: beige;
+    }
+</style>
+
+{% endblock %}

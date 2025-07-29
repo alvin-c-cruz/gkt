@@ -1,0 +1,67 @@
+{% extends "base_print.html" %}
+
+{% block title %}Print Check No.{{ check_number }}{% endblock %}
+
+{% block styles %}
+    body {
+        font-family: Calibri;
+        font-size: 15px;
+    }
+
+    .name_on_check,
+    .record_month,
+    .record_day,
+    .record_year,
+    .amount_in_words,
+    .amount_in_numeral {
+        position: absolute;
+    }
+
+    .record_month,
+    .record_day,
+    .record_year {
+        top: 1.20cm;
+        white-space: pre;
+    }
+
+    .record_month {
+        left: 15.00cm;
+    }
+
+    .record_day {
+        left: 16.2cm;
+    }
+
+    .record_year {
+        left: 17.4cm;
+    }
+
+    .name_on_check,
+    .amount_in_numeral {
+        top: 2.00cm;
+    }
+
+    .name_on_check {
+        left: 3.0cm;
+    }
+
+    .amount_in_numeral {
+        left: 14.5cm;
+    }
+
+    .amount_in_words {
+        top: 2.80cm;
+        left: 2.10cm;
+    }
+
+
+{% endblock %}
+
+{% block content %}
+    <strong class="name_on_check">{{ name_on_check }}</strong>
+    <strong class="record_month">{{ record_month }}</strong>
+    <strong class="record_day">{{ record_day }}</strong>
+    <strong class="record_year">{{ record_year }}</strong>
+    <strong class="amount_in_words">{{ amount_in_words }}</strong>
+    <strong class="amount_in_numeral">{{ amount_in_numeral }}</strong>
+{% endblock %}

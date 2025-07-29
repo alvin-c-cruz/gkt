@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Disbursement{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-danger">Disbursement</h1>
+    <a href="{{ url_for('disbursement.add') }}" class="btn btn-success mb-3">Add Disbursement</a>
+
+    <form method="post" action="{{ url_for('disbursement.home') }}" class="mb-3">
+        <div class="form row">
+            <div class="col-md-4">
+                <label for="date_from">Date From:</label>
+                <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+            </div>
+            <div class="col-md-4">
+                <label for="date_to">Date To:</label>
+                <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary mt-4">Apply Filter</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Disbursement No.</th>
+                            <th>Vendor</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td>{{ row.formatted_record_date }}</td>
+                            <td>{{ row.record_number }}</td>
+                            <td>{{ row.vendor.vendor_name }}</td>
+                            <td>{{ row.description }}</td>
+                            <td>{{ row.formatted_amount }}</td>
+                            <td>
+                                {% if row.cancelled %}
+                                <p style="color: red;">Cancelled {{ row.formatted_cancelled }}</p>
+                                {% endif %}
+                                {% if row.submitted %}
+                                <p>For Billing {{ row.formatted_submitted }}</p>
+                                {% endif %}
+                                {% if not (row.submitted or row.cancelled) %}
+                                <p style="color: green;">DRAFT</p>
+                                {% endif %}    
+                            </td>
+                            <td>
+                                {% if row.submitted or row.cancelled %}
+                                    <a href="{{ url_for('disbursement.view', record_id=row.id) }}"
+                                    class="btn btn-warning btn-sm">View</a>
+                                {% else %}
+                                    <a href="{{ url_for('disbursement.edit', record_id=row.id) }}"
+                                    class="btn btn-warning btn-sm">Edit</a>
+                                    {% if current_user.admin %}
+                                    <a href="{{ url_for('disbursement.cancel', record_id=row.id) }}"
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirmMessage('Type YES to cancel this record.')">Cancel</a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if rows|length == 0 %}
+                        <tr>
+                            <td colspan="6" class="text-center">No records found.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

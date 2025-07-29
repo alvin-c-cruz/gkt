@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "macros_button.html" import edit_button, delete_button, approve_button, unlock_button %}
+
+{% block title %}Vendor{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Vendor</h1>
+    <a href="{{ url_for('vendor.add') }}" class="btn btn-success mb-3">Add Vendor</a>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Vendor Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td>{{ row.vendor_name }}</td>
+                            <td>
+                                {% if not row.approved %}
+                                {{ edit_button(url_for('vendor.edit', record_id=row.id)) }}
+                                {{ delete_button(url_for('vendor.delete', record_id=row.id)) }}
+                                    {% if current_user.admin %}
+                                {{ approve_button(url_for('vendor.approve', record_id=row.id)) }}
+                                    {% endif %}
+                                {% else %}
+                                <span>Locked by admin.</span>
+                                    {% if current_user.admin %}
+                                {{ unlock_button(url_for('vendor.unlock', record_id=row.id)) }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2">No record found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
