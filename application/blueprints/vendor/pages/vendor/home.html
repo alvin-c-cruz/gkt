@@ -15,6 +15,7 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Vendor Name</th>
+                            <th>TIN</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -22,6 +23,7 @@
                         {% for row in rows %}
                         <tr>
                             <td>{{ row.vendor_name }}</td>
+                            <td>{{ row.tin }}</td>
                             <td>
                                 {% if not row.approved %}
                                 {{ edit_button(url_for('vendor.edit', record_id=row.id)) }}

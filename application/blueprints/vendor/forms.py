@@ -37,6 +37,7 @@ def get_attributes_as_dict(object):
 class Form:
     id: int = None
     vendor_name: str = ""
+    tin:str = ""
     
     user_prepare_id: int = None
     user_prepare: str = ""
