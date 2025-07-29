@@ -1,168 +1,191 @@
 {% extends "base.html" %}
-{% from "macros_button.html" import edit_button, delete_button, approve_button %}
-
 {% block styles %}
 <style>
-    .verse-container {
-        margin-top: 50px;
+    .report-container {
+        margin-top: 30px;
         margin-left: auto;
         margin-right: auto;
         background-color: #ffffff;
-        padding: 20px 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        max-width: 600px;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 900px;
+    }
+
+    .report-title {
+        font-size: 1.6em;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .report-table th,
+    .report-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: right;
+    }
+
+    .report-table th {
+        background-color: #f8f9fa;
+        color: #495057;
         text-align: center;
     }
 
-    .verse-text {
-        font-size: 1.5em;
-        color: #333333;
-        margin-bottom: 15px;
+    .report-table td:first-child,
+    .report-table th:first-child {
+        text-align: left;
     }
 
-    .verse-reference {
-        font-size: 1.2em;
-        color: #555555;
+    .report-note {
+        font-size: 0.85em;
+        color: #6c757d;
         font-style: italic;
+    }
+
+    .form-select {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    .mb-5 {
+        margin-bottom: 2.5rem;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .justify-content-end {
+        justify-content: flex-end;
+    }
+
+    .align-items-center {
+        align-items: center;
+    }
+
+    .me-2 {
+        margin-right: 0.5rem;
+    }
+
+    .me-3 {
+        margin-right: 1rem;
     }
 </style>
 {% endblock %}
 
 {% block content %}
 
-<div class="verse-container">
-    <p class="verse-reference">Balance Sheet</p>
-    <p class="verse-text">
-        Items    
-    </p>
+<!-- Period Selector -->
+<div class="mb-4 d-flex justify-content-end align-items-center">
+    <label for="reportMonth" class="me-2">Month:</label>
+    <select id="reportMonth" class="form-select w-auto me-3">
+        {% for month in [
+            'January','February','March','April','May','June',
+            'July','August','September','October','November','December'] %}
+            <option {% if month == "July" %}selected{% endif %}>{{ month }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="reportYear" class="me-2">Year:</label>
+    <select id="reportYear" class="form-select w-auto">
+        <option>2023</option>
+        <option selected>2024</option>
+        <option>2025</option>
+    </select>
 </div>
 
-{% if "Department" in current_user.user_roles and current_user.admin and departments %}
-<h2>Department for approval</h2>
-<table class="table table-striped">
-    <tr>
-        <th>Department Name</th>
-        <th>Actions</th>
-    </tr>
-    {% for record in departments %}
-    <tr>
-        <td>{{ record.department_name }}</td>
-        <td>
-            {{ edit_button(url_for('department.edit', department_id=record.id)) }}
-            {{ delete_button(url_for('department.delete', department_id=record.id)) }}
-            {{ approve_button(url_for('department.approve', department_id=record.id)) }}
-        </td>
-    </tr>
-    
-    {% endfor %}
-</table>
-<hr>
-{% endif %}
+<div class="report-container">
 
-{% if "Customer" in current_user.user_roles and current_user.admin and customers %}
-<h2>Customer for approval</h2>
-<table class="table table-striped">
-    <tr>
-        <th>Customer Alias</th>
-        <th>Registered Name</th>
-        <th>TIN</th>
-        <th>Address</th>
-        <th>Business Style</th>
-        <th>Actions</th>
-    </tr>
-    {% for record in customers %}
-    <tr>
-        <td>{{ record.customer_name }}</td>
-        <td>{{ record.registered_name }}</td>
-        <td>{{ record.tin }}</td>
-        <td>{{ record.address }}</td>
-        <td>{{ record.business_style }}</td>
-        <td>
-            {{ edit_button(url_for('customer.edit', customer_id=record.id)) }}
-            {{ delete_button(url_for('customer.delete', customer_id=record.id)) }}
-            {{ approve_button(url_for('customer.approve', customer_id=record.id)) }}
-        </td>
-    </tr>
-    
-    {% endfor %}
-</table>
-<hr>
-{% endif %}
+    <!-- Balance Sheet -->
+    <p class="report-title">Balance Sheet</p>
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>This Year</th>
+                <th>Last Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Assets</strong></td><td></td><td></td></tr>
+            <tr><td>Cash</td><td>₱150,000</td><td>₱120,000</td></tr>
+            <tr><td>Accounts Receivable</td><td>₱90,000</td><td>₱75,000</td></tr>
+            <tr><td>Inventory</td><td>₱80,000</td><td>₱65,000</td></tr>
+            <tr><td>Equipment</td><td>₱300,000</td><td>₱300,000</td></tr>
+            <tr><td><strong>Total Assets</strong></td><td><strong>₱620,000</strong></td><td><strong>₱560,000</strong></td></tr>
 
-{% if "Vendor" in current_user.user_roles and current_user.admin and vendors %}
-<h2>Vendor for approval</h2>
-<table class="table table-striped">
-    <tr>
-        <th>Vendor Alias</th>
-        <th>Registered Name</th>
-        <th>TIN</th>
-        <th>Address</th>
-        <th>Business Style</th>
-        <th>Actions</th>
-    </tr>
-    {% for record in vendors %}
-    <tr>
-        <td>{{ record.vendor_name }}</td>
-        <td>{{ record.registered_name }}</td>
-        <td>{{ record.tin }}</td>
-        <td>{{ record.address }}</td>
-        <td>{{ record.business_style }}</td>
-        <td>
-            {{ edit_button(url_for('vendor.edit', record_id=record.id)) }}
-            {{ delete_button(url_for('vendor.delete', record_id=record.id)) }}
-            {{ approve_button(url_for('vendor.approve', record_id=record.id)) }}
-        </td>
-    </tr>
-    
-    {% endfor %}
-</table>
-<hr>
-{% endif %}
+            <tr><td><strong>Liabilities</strong></td><td></td><td></td></tr>
+            <tr><td>Accounts Payable</td><td>₱50,000</td><td>₱45,000</td></tr>
+            <tr><td>Loan Payable</td><td>₱100,000</td><td>₱120,000</td></tr>
+            <tr><td><strong>Total Liabilities</strong></td><td><strong>₱150,000</strong></td><td><strong>₱165,000</strong></td></tr>
 
+            <tr><td><strong>Equity</strong></td><td></td><td></td></tr>
+            <tr><td>Retained Earnings</td><td>₱350,000</td><td>₱295,000</td></tr>
+            <tr><td>Owner's Capital</td><td>₱120,000</td><td>₱100,000</td></tr>
+            <tr><td><strong>Total Equity</strong></td><td><strong>₱470,000</strong></td><td><strong>₱395,000</strong></td></tr>
+        </tbody>
+    </table>
 
-{% if "Measure" in current_user.user_roles and current_user.admin and measures %}
-<h2>Measure for approval</h2>
-<table class="table table-striped">
-    <tr>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-    {% for record in measures %}
-    <tr>
-        <td>{{ record.measure_name }}</td>
-        <td>
-            {{ edit_button(url_for('measure.edit', measure_id=record.id)) }}
-            {{ delete_button(url_for('measure.delete', measure_id=record.id)) }}
-            {{ approve_button(url_for('measure.approve', measure_id=record.id)) }}
-        </td>
-    </tr>
-    
-    {% endfor %}
-</table>
-<hr>
-{% endif %}
+    <!-- Income Statement -->
+    <p class="report-title">Income Statement</p>
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th>Current Month</th>
+                <th>This Year</th>
+                <th>Last Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>Revenues</strong></td><td></td><td></td><td></td></tr>
+            <tr><td>Sales - ABC Corp</td><td>₱80,000</td><td>₱320,000</td><td>₱280,000</td></tr>
+            <tr><td>Sales - XYZ Inc</td><td>₱45,000</td><td>₱210,000</td><td>₱180,000</td></tr>
+            <tr><td>Sales - LMN Ltd</td><td>₱30,000</td><td>₱150,000</td><td>₱130,000</td></tr>
+            <tr><td><strong>Total Revenues</strong></td><td><strong>₱155,000</strong></td><td><strong>₱680,000</strong></td><td><strong>₱590,000</strong></td></tr>
 
-{% if "Plastic Label" in current_user.user_roles and current_user.admin and plastic_labels %}
-<h2>Plastic Label for approval</h2>
-<table class="table table-striped">
-    <tr>
-        <th>Description</th>
-        <th>Actions</th>
-    </tr>
-    {% for record in plastic_labels %}
-    <tr>
-        <td>{{ record.label_name }}</td>
-        <td>
-            {{ edit_button(url_for('plastic_label.edit', plastic_label_id=record.id)) }}
-            {{ delete_button(url_for('plastic_label.delete', plastic_label_id=record.id)) }}
-            {{ approve_button(url_for('plastic_label.approve', plastic_label_id=record.id)) }}
-        </td>
-    </tr>
-    
-    {% endfor %}
-</table>
-<hr>
-{% endif %}
+            <tr><td><strong>Operating Expenses</strong></td><td></td><td></td><td></td></tr>
+            <tr><td>Salaries and Wages</td><td>₱40,000</td><td>₱160,000</td><td>₱140,000</td></tr>
+            <tr><td>Utilities</td><td>₱10,000</td><td>₱45,000</td><td>₱40,000</td></tr>
+            <tr><td>Office Supplies</td><td>₱5,000</td><td>₱20,000</td><td>₱18,000</td></tr>
+            <tr><td>Transportation</td><td>₱7,000</td><td>₱30,000</td><td>₱28,000</td></tr>
+            <tr><td>Repairs and Maintenance</td><td>₱3,000</td><td>₱15,000</td><td>₱12,000</td></tr>
+            <tr><td><strong>Total Expenses</strong></td><td><strong>₱65,000</strong></td><td><strong>₱270,000</strong></td><td><strong>₱238,000</strong></td></tr>
+
+            <tr><td><strong>Net Income</strong></td><td><strong>₱90,000</strong></td><td><strong>₱410,000</strong></td><td><strong>₱352,000</strong></td></tr>
+        </tbody>
+    </table>
+    <p class="report-note">Note: Items shown are sample data for layout and testing only. No Cost of Goods Sold (COGS) is presented; only Operating Expenses are shown.</p>
+
+    <!-- Financial Ratios -->
+    <p class="report-title">Financial Ratios</p>
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th>Ratio</th>
+                <th>This Year</th>
+                <th>Last Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Current Ratio</td><td>1.85</td><td>1.72</td></tr>
+            <tr><td>Quick Ratio</td><td>1.20</td><td>1.10</td></tr>
+            <tr><td>Debt to Equity</td><td>0.45</td><td>0.50</td></tr>
+            <tr><td>Net Profit Margin</td><td>14.3%</td><td>13.7%</td></tr>
+            <tr><td>Return on Assets</td><td>9.8%</td><td>8.5%</td></tr>
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
